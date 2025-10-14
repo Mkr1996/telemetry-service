@@ -22,7 +22,8 @@ jobs:
 
       - name: Build with Maven
         run: mvn -B clean package -DskipTests
-
+        working-directory: "Backend Layer"
+        
       - name: Build Docker image
         run: docker build -t ${{ secrets.DOCKER_USERNAME }}/telemetry-api:latest .
 
