@@ -25,7 +25,7 @@ jobs:
         working-directory: "Backend Layer"
         
       - name: Build Docker image
-        run: docker build -t telemetry-api:latest .
+        run: docker build -t ${{ secrets.DOCKER_USERNAME }}/telemetry-api:latest .
         working-directory: "Backend Layer"
 
       - name: Log in to Docker Hub
