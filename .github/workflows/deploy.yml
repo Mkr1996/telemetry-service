@@ -37,15 +37,15 @@ jobs:
       - name: Push image to Docker Hub
         run: docker push ${{ secrets.DOCKER_USERNAME }}/telemetry-api:latest
 
-      - name: Configure kubectl
-        uses: azure/setup-kubectl@v3
-        with:
-          version: 'v1.31.0'
+# - name: Configure kubectl
+#   uses: azure/setup-kubectl@v3
+#   with:
+#     version: 'v1.31.0'
 
-      - name: Set up kubeconfig
-        run: |
-          mkdir -p ~/.kube
-          echo "${{ secrets.KUBE_CONFIG }}" > ~/.kube/config
+# - name: Set up kubeconfig
+#   run: |
+#     mkdir -p ~/.kube
+#     echo "${{ secrets.KUBE_CONFIG }}" > ~/.kube/config
 
 # - name: Deploy to Kubernetes
 #   run: |
