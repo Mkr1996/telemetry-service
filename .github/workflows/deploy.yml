@@ -47,9 +47,9 @@ jobs:
           mkdir -p ~/.kube
           echo "${{ secrets.KUBE_CONFIG }}" > ~/.kube/config
 
-      - name: Deploy to Kubernetes
-        run: |
-          kubectl apply -f k8s/configmap.yaml
-          kubectl apply -f k8s/deployment.yaml
-          kubectl apply -f k8s/service.yaml
-          kubectl rollout restart deployment telemetry-api-deployment
+# - name: Deploy to Kubernetes
+#   run: |
+#     kubectl apply -f k8s/configmap.yaml
+#     kubectl apply -f k8s/deployment.yaml
+#     kubectl apply -f k8s/service.yaml
+#     kubectl rollout restart deployment telemetry-api-deployment
