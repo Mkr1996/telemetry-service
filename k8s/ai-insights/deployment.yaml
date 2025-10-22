@@ -1,0 +1,38 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: ai-insights
+  namespace: telemetry-platform
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: ai-insights
+  template:
+    metadata:
+      labels:
+        app: ai-insights
+    spec:
+      containers:
+      - name: ai-insights
+        image: ai-insights:latest  # Replace with your Docker image name if using a registry
+        ports:
+        - containerPort: 8000
+        envFrom:
+        - configMapRef:
+            name: telemetry-config
+        - secretRef:
+            name: telemetry-secrets
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: ai-insights-service
+  namespace: telemetry-platform
+spec:
+  selector:
+    app: ai-insights
+  ports:
+  - port: 8000
+    targetPort: 8000
+  type: ClusterIP

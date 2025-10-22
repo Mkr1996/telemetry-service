@@ -1,0 +1,10 @@
+fastapi==0.115.0
+uvicorn==0.30.6
+psycopg[binary]==3.2.1
+pgvector==0.2.5
+pydantic==2.9.2
+python-dotenv==1.0.1
+sentence-transformers==2.2.2
+torch==2.0.1+cpu 
+-f https://download.pytorch.org/whl/torch_stable.html
+numpy==1.26.4

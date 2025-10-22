@@ -1,0 +1,23 @@
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: telemetry-config
+  namespace: telemetry-platform
+data:
+  # Spring Config
+  SPRING_PROFILES_ACTIVE: "prod"
+  SPRING_DATASOURCE_URL: "jdbc:postgresql://timescaledb-service:5432/telemetrydb"
+  SPRING_DATASOURCE_DRIVER_CLASS_NAME: "org.postgresql.Driver"
+
+  # Kafka Configuration
+  KAFKA_BOOTSTRAP_SERVERS: "kafka-service:9092"
+
+  # AI Microservice Config
+  AI_INSIGHTS_BASEURL: "http://ai-insights-service:8000"
+
+  # Shared Database Config (used by Python AI microservice)
+  DB_HOST: "timescaledb-service"
+  DB_PORT: "5432"
+  DB_NAME: "telemetrydb"
+  EMBED_MODEL: "sentence-transformers/all-MiniLM-L6-v2"
+  EMBED_DIM: "384"

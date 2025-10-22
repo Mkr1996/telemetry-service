@@ -2,6 +2,7 @@ version: '3.9'
 services:
   zookeeper:
     image: confluentinc/cp-zookeeper:7.5.0
+    container_name: zookeeper
     environment:
       ZOOKEEPER_CLIENT_PORT: 2181
       ZOOKEEPER_TICK_TIME: 2000
@@ -10,6 +11,7 @@ services:
 
   kafka:
     image: confluentinc/cp-kafka:7.5.0
+    container_name: kafka
     depends_on:
       - zookeeper
     ports:
@@ -32,22 +34,45 @@ services:
       - "5432:5432"
     volumes:
       - db_data:/var/lib/postgresql/data
-    command: ["postgres", "-c", "shared_preload_libraries=timescaledb"]
+    command: [ "postgres", "-c", "shared_preload_libraries=timescaledb,vector" ] # enable pgvector
 
   telemetry-api:
-    build: .
+    build:
+      context: "./Backend Layer" # path to your Spring Boot folder
+      dockerfile: Dockerfile # file name (must be exactly this)
     container_name: telemetry-api
     ports:
       - "8081:8080"
     depends_on:
       - db
       - kafka
+      - ai-insights
     environment:
       SPRING_DATASOURCE_URL: jdbc:postgresql://db:5432/telemetrydb
       SPRING_DATASOURCE_USERNAME: postgres
       SPRING_DATASOURCE_PASSWORD: postgres
       SPRING_PROFILES_ACTIVE: prod
       SPRING_KAFKA_BOOTSTRAP_SERVERS: kafka:9092
+      AI_INSIGHTS_BASEURL: http://ai-insights:8000
+
+  ai-insights:
+    build: ./ai-insights
+    container_name: ai-insights
+    depends_on:
+      - db
+    ports:
+      - "8000:8000"
+    environment:
+      DB_HOST: db
+      DB_PORT: 5432
+      DB_NAME: telemetrydb
+      DB_USER: postgres
+      DB_PASS: postgres
+      EMBED_MODEL: sentence-transformers/all-MiniLM-L6-v2
+      EMBED_DIM: 384
+    volumes:
+      - ai_model_cache:/root/.cache/huggingface # speeds up load
 
 volumes:
   db_data:
+  ai_model_cache:

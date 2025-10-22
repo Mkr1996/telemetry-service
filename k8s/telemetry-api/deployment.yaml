@@ -1,0 +1,62 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: telemetry-api-deployment
+  namespace: telemetry-platform
+  labels:
+    app: telemetry-api
+spec:
+  replicas: 3
+  selector:
+    matchLabels:
+      app: telemetry-api
+  template:
+    metadata:
+      labels:
+        app: telemetry-api
+    spec:
+      containers:
+        - name: telemetry-api
+          image: telemetry-api:v1   # Replace with registry path if needed
+          ports:
+            - containerPort: 8081
+          env:
+            - name: SPRING_PROFILES_ACTIVE
+              valueFrom:
+                configMapKeyRef:
+                  name: telemetry-config
+                  key: SPRING_PROFILES_ACTIVE
+            - name: SPRING_DATASOURCE_URL
+              valueFrom:
+                configMapKeyRef:
+                  name: telemetry-config
+                  key: SPRING_DATASOURCE_URL
+            - name: SPRING_DATASOURCE_USERNAME
+              valueFrom:
+                secretKeyRef:
+                  name: telemetry-secrets
+                  key: SPRING_DATASOURCE_USERNAME
+            - name: SPRING_DATASOURCE_PASSWORD
+              valueFrom:
+                secretKeyRef:
+                  name: telemetry-secrets
+                  key: SPRING_DATASOURCE_PASSWORD
+
+            # Kafka & AI Integration (Critical for Fleet Management Role Alignment)
+            - name: SPRING_KAFKA_BOOTSTRAP_SERVERS
+              value: "kafka-service:9092"
+            - name: AI_INSIGHTS_BASEURL
+              value: "http://ai-insights-service:8000"
+
+          readinessProbe:
+            httpGet:
+              path: /actuator/health
+              port: 8081
+            initialDelaySeconds: 10
+            periodSeconds: 5
+          livenessProbe:
+            httpGet:
+              path: /actuator/health
+              port: 8081
+            initialDelaySeconds: 30
+            periodSeconds: 10
