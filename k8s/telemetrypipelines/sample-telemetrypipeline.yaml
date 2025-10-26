@@ -1,0 +1,8 @@
+apiVersion: platform.example.com/v1alpha1
+kind: TelemetryPipeline
+metadata:
+  name: machine-1
+spec:
+  machineID: "machine-1"
+  enableAI: true
+  interval: 5

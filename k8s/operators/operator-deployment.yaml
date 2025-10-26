@@ -1,0 +1,20 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: telemetry-operator
+  namespace: default
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: telemetry-operator
+  template:
+    metadata:
+      labels:
+        app: telemetry-operator
+    spec:
+      serviceAccountName: telemetry-operator-sa
+      containers:
+        - name: telemetry-operator
+          image: docker.io/makhatri123/telemetry-operator:latest
+          imagePullPolicy: Always
